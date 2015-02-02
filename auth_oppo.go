@@ -5,7 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
-	"github/0studio/goauth/utils"
+	"github.com/0studio/goauth/utils"
 	"math/rand"
 	"net/url"
 	"strconv"

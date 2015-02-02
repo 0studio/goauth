@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	//"strings"
-	"github/0studio/goauth/utils"
+	"github.com/0studio/goauth/utils"
 	"time"
 )
 

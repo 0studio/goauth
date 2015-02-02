@@ -3,7 +3,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github/0studio/goauth/utils"
+	"github.com/0studio/goauth/utils"
 	"time"
 )
 

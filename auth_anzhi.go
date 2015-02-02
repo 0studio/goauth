@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github/0studio/goauth/utils"
+	"github.com/0studio/goauth/utils"
 	"net/url"
 	"strconv"
 	"strings"

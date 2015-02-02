@@ -2,7 +2,7 @@ package goauth
 
 import (
 	"encoding/json"
-	"github/0studio/goauth/utils"
+	"github.com/0studio/goauth/utils"
 	"time"
 )
 

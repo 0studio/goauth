@@ -5,8 +5,8 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/0studio/goauth/utils"
 	log "github.com/cihub/seelog"
-	"github/0studio/goauth/utils"
 	"time"
 )
 
