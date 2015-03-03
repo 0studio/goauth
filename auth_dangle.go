@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	//"strings"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"time"
 )
 
@@ -30,7 +30,7 @@ func DoDangleAuth(appId, appKey, appSecret string, sessionId string, AccountId s
 	//urlStr := "http://sdk.m.duoku.com/openapi/sdk/checksession?"
 	mid := AccountId
 	token := sessionId
-	sig := utils.GetHexMd5(fmt.Sprintf("%s|%s", token, appKey))
+	sig := goutils.GetHexMd5(fmt.Sprintf("%s|%s", token, appKey))
 	urlStr := fmt.Sprintf("http://connect.d.cn/open/member/info/?app_id=%s&mid=%s&token=%s&sig=%s", appId, mid, token, sig)
 	jsonBytes, err := getDangleLoginResponse(urlStr, now)
 	if err != nil {
@@ -51,5 +51,5 @@ func DoDangleAuth(appId, appKey, appSecret string, sessionId string, AccountId s
 }
 
 func getDangleLoginResponse(urlStr string, now time.Time) (json []byte, err error) {
-	return utils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }

@@ -5,7 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"math/rand"
 	"net/url"
 	"strconv"
@@ -31,7 +31,7 @@ func DoOPPOAuth(appId, appKey, appSecret string, token string, now time.Time) (s
 	key := appSecret + "&" + oauthTokenSecret
 	urlParamString := fmt.Sprintf("oauth_consumer_key=%s&oauth_nonce=%s&oauth_signature_method=%s&oauth_timestamp=%s&oauth_token=%s&oauth_version=%s",
 		appKey, oauthNonce, oauthSignMethod, oauthTime, oauthToken, oauthVersion)
-	baseString := "POST&" + utils.UrlEncode("http://thapi.nearme.com.cn/account/GetUserInfoByGame") + "&" + utils.UrlEncode(urlParamString)
+	baseString := "POST&" + goutils.UrlEncode("http://thapi.nearme.com.cn/account/GetUserInfoByGame") + "&" + goutils.UrlEncode(urlParamString)
 	mac := hmac.New(sha1.New, []byte(key))
 	mac.Write([]byte(baseString))
 	oauthSignature := mac.Sum(nil)
@@ -62,7 +62,7 @@ func DoOPPOAuth(appId, appKey, appSecret string, token string, now time.Time) (s
 
 // OPPO平台
 func getOPPOLoginResponse(v url.Values, now time.Time) (json []byte, err error) {
-	return utils.PostFormHttpResponse("http://thapi.nearme.com.cn/account/GetUserInfoByGame", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostFormHttpResponse("http://thapi.nearme.com.cn/account/GetUserInfoByGame", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 type OPPOLoginResp struct {

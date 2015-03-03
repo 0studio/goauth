@@ -3,7 +3,7 @@ package goauth
 // 豌豆夹
 import (
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -19,7 +19,7 @@ func DoWanDouJiaAuth(appId, appKey string, token string, AccountId string, now t
 	return PB_ERRNO_AUTH_ERROR
 }
 func getWanDouJiaLoginResponse(appId, appKey string, AccountId string, token string, now time.Time) string {
-	contentByte, err := utils.GetHttpResponseAsJson(getWanDouJiaLoginUrl(appId, appKey, AccountId, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	contentByte, err := goutils.GetHttpResponseAsJson(getWanDouJiaLoginUrl(appId, appKey, AccountId, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		log.Error("auth_wandoujia_error", err)
 		return "false"

@@ -2,7 +2,7 @@ package goauth
 
 import (
 	"encoding/json"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"time"
 )
 
@@ -19,7 +19,7 @@ func DoPPAuth(token string, now time.Time) (status int32, AccountId string, Acco
 	statusStr := loginInfo.Status
 	if statusStr == PP_STATUS_SUCC {
 		status = PB_STATUS_SUCC
-		AccountId = utils.Int2Str(loginInfo.Userid)
+		AccountId = goutils.Int2Str(loginInfo.Userid)
 		AccountName = loginInfo.Username
 		return
 	}
@@ -28,7 +28,7 @@ func DoPPAuth(token string, now time.Time) (status int32, AccountId string, Acco
 
 // 25PP平台
 func getLoginResponse(token string, now time.Time) (json []byte, err error) {
-	return utils.PostHttpResponse("http://passport_i.25pp.com:8080/index?tunnel-command=2852126756", []byte(token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostHttpResponse("http://passport_i.25pp.com:8080/index?tunnel-command=2852126756", []byte(token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 const (

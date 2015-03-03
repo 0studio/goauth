@@ -3,7 +3,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -42,7 +42,7 @@ func Do91Auth(appId, appKey string, AccountId string, sessionID string, now time
 }
 
 func get91LoginResponse(appId, appKey string, AccountId string, sessionID string, now time.Time) (response Response91Login) {
-	jsonBytes, err := utils.GetHttpResponseAsJson(get91LoginUrl(appId, appKey, AccountId, sessionID), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	jsonBytes, err := goutils.GetHttpResponseAsJson(get91LoginUrl(appId, appKey, AccountId, sessionID), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	response = Response91Login{ErrorCode: LOGIN_91_ERROR_FAIL}
 	if err != nil {
 		log.Error("error_auth91", err)
@@ -53,7 +53,7 @@ func get91LoginResponse(appId, appKey string, AccountId string, sessionID string
 	return
 }
 func get91LoginUrl(appId, appKey string, AccountId string, sessionID string) string {
-	Sign := utils.GetHexMd5(fmt.Sprintf("%s%s%s%s%s", appId, CONST_91_LOGIN_ACT, AccountId, sessionID, appKey))
+	Sign := goutils.GetHexMd5(fmt.Sprintf("%s%s%s%s%s", appId, CONST_91_LOGIN_ACT, AccountId, sessionID, appKey))
 	queryStr := fmt.Sprintf("AppId=%s&Act=4&Uin=%s&Sign=%s&SessionID=%s", url.QueryEscape(appId), url.QueryEscape(AccountId), Sign, url.QueryEscape(sessionID))
 	urlStr := fmt.Sprintf("http://service.sj.91.com/usercenter/AP.aspx?%s", queryStr)
 	return urlStr

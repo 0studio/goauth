@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"strings"
 	"time"
 )
@@ -41,5 +41,5 @@ func DoXiaomiAuth(appId, appKey, appSecret string, sessionId string, AccountId s
 }
 
 func getXiaomiLoginResponse(urlStr string, now time.Time) (json []byte, err error) {
-	return utils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }

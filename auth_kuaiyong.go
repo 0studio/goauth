@@ -5,7 +5,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"time"
 )
@@ -18,7 +18,7 @@ func DoKuaiyongAuth(appId, appKey string, sessionId string, now time.Time) (int3
 	return PB_ERRNO_AUTH_ERROR, id, name
 }
 func getKUAIYONGLoginResponse(appId, appKey string, token string, now time.Time) (int, string, string) {
-	contentByte, err := utils.GetHttpResponseAsJson(getKUAIYONGLoginUrl(appId, appKey, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	contentByte, err := goutils.GetHttpResponseAsJson(getKUAIYONGLoginUrl(appId, appKey, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		log.Error("auth_kuaiyong_error", err)
 		return 1, "", ""
@@ -29,7 +29,7 @@ func getKUAIYONGLoginResponse(appId, appKey string, token string, now time.Time)
 }
 func getKUAIYONGLoginUrl(appId, appKey string, token string) string {
 	signStr := fmt.Sprintf("%s%s", appKey, token)
-	sign := utils.GetHexMd5(signStr)
+	sign := goutils.GetHexMd5(signStr)
 	urlStr := fmt.Sprintf("http://f_signin.bppstore.com/loginCheck.php?tokenKey=%s&sign=%s", token, sign)
 	log.Debug(urlStr, "url")
 	return urlStr

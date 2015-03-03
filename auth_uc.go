@@ -3,7 +3,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"time"
 )
 
@@ -53,7 +53,7 @@ func DoUCAuth(appKey, appSecret string, cpId, gameid, serverid int, sid string, 
 	ucData := UCData{sid}
 	ucGame := UCGame{cpId, gameid, "2", serverid}
 
-	sign := utils.GetHexMd5(fmt.Sprintf("%s%s=%s%s", cpId, "sid", sid, appKey))
+	sign := goutils.GetHexMd5(fmt.Sprintf("%s%s=%s%s", cpId, "sid", sid, appKey))
 
 	ucSend := UCSend{id, service, ucData, ucGame, sign}
 	content, _ := json.Marshal(ucSend)
@@ -72,5 +72,5 @@ func DoUCAuth(appKey, appSecret string, cpId, gameid, serverid int, sid string, 
 
 // UC平台
 func getUCLoginResponse(content []byte, now time.Time) (json []byte, err error) {
-	return utils.PostHttpResponse("http://sdk.g.uc.cn/ss/", content, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostHttpResponse("http://sdk.g.uc.cn/ss/", content, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }

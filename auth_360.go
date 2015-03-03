@@ -3,7 +3,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -50,7 +50,7 @@ func Do360Auth(appId, appKey, appSecret string, authorizationCode string, Accoun
 }
 
 func get360AccessTokenRecord(appId, appKey, appSecret string, now time.Time, authorizationCode string) (accessTokenRec AccessTokenRec360, err error) {
-	jsonBytes, err := utils.GetHttpResponseAsJson(get360AccessToken(appId, appKey, appSecret, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	jsonBytes, err := goutils.GetHttpResponseAsJson(get360AccessToken(appId, appKey, appSecret, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		log.Error(err)
 		fmt.Println(err)
@@ -61,7 +61,7 @@ func get360AccessTokenRecord(appId, appKey, appSecret string, now time.Time, aut
 	json.Unmarshal(jsonBytes, &accessTokenRec)
 
 	if accessTokenRec.IsTokenAvailable() {
-		accessTokenRec.ExpireTime = now.Add(time.Second * time.Duration(utils.Str2Int(accessTokenRec.ExpiresIn, 0)))
+		accessTokenRec.ExpireTime = now.Add(time.Second * time.Duration(goutils.Str2Int(accessTokenRec.ExpiresIn, 0)))
 	}
 
 	return
@@ -76,7 +76,7 @@ func (rec *AccessTokenRec360) Refresh360Token(appId, appKey, appSecret string, n
 		url.QueryEscape(CONST_360_REDIRECT_URI))
 	urlStr := fmt.Sprintf("https://openapi.360.cn/oauth2/access_token?%s", queryStr)
 
-	jsonBytes, err := utils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	jsonBytes, err := goutils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		return false
 	}
@@ -86,7 +86,7 @@ func (rec *AccessTokenRec360) Refresh360Token(appId, appKey, appSecret string, n
 	if accessTokenRec.IsTokenAvailable() {
 		rec.Access_token = accessTokenRec.Access_token
 		rec.RefreshToken = accessTokenRec.RefreshToken
-		rec.ExpireTime = now.Add(time.Second * time.Duration(utils.Str2Int(accessTokenRec.ExpiresIn, 0)))
+		rec.ExpireTime = now.Add(time.Second * time.Duration(goutils.Str2Int(accessTokenRec.ExpiresIn, 0)))
 		return true
 	}
 
@@ -173,7 +173,7 @@ func Get360UserInfo(accessToken string, now time.Time) (status int32, accountid 
 
 }
 func get360UserInfoRecord(accessToken string, now time.Time) (userInfo UserInfo360, err error) {
-	jsonBytes, err := utils.GetHttpResponseAsJson(get360UserInfoUrl(accessToken), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	jsonBytes, err := goutils.GetHttpResponseAsJson(get360UserInfoUrl(accessToken), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		return
 	}

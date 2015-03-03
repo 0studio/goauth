@@ -3,7 +3,7 @@ package goauth
 // 同步推
 import (
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -25,7 +25,7 @@ func DoTongbutuiAuth(token string, now time.Time) int32 {
 	return PB_ERRNO_AUTH_ERROR
 }
 func getTongbutuiLoginResponse(token string, now time.Time) string {
-	contentByte, err := utils.GetHttpResponseAsJson(getTongbutuiLoginUrl(token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	contentByte, err := goutils.GetHttpResponseAsJson(getTongbutuiLoginUrl(token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		log.Error("auth_tongbutui_error", err)
 		return "false"

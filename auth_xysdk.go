@@ -2,7 +2,7 @@ package goauth
 
 import (
 	"encoding/json"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"net/url"
 	"time"
 )
@@ -37,7 +37,7 @@ func DoXYAuth(appId, uid string, sid string, accountId string, now time.Time) (s
 }
 
 func getXYLoginResponse(v url.Values, now time.Time) (json []byte, err error) {
-	return utils.PostFormHttpResponse("http://passport.xyzs.com/checkLogin.php", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostFormHttpResponse("http://passport.xyzs.com/checkLogin.php", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 type XYLoginResp struct {

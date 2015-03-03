@@ -3,7 +3,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"net/url"
 	"sort"
 	"strconv"
@@ -44,7 +44,7 @@ func DoYouXiGongChangAuth(appKey, appSecret string, sessionid string, acountName
 }
 
 func getLoginYouXiGongChangResp(v url.Values, now time.Time) (json []byte, err error) {
-	return utils.PostFormHttpResponse("http://anyapi.mobile.youxigongchang.com/foreign/oauth/verification.php", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostFormHttpResponse("http://anyapi.mobile.youxigongchang.com/foreign/oauth/verification.php", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 func getYouXiGongChangLoginSign(appSecret string, v url.Values) (sign string) {
@@ -57,11 +57,11 @@ func getYouXiGongChangLoginSign(appSecret string, v url.Values) (sign string) {
 	sort.Strings(keys)
 	data := make([]string, len(keys))
 	for i, key := range keys {
-		data[i] = fmt.Sprintf("%s=%s", key, utils.UrlEncode(v.Get(key)))
+		data[i] = fmt.Sprintf("%s=%s", key, goutils.UrlEncode(v.Get(key)))
 	}
 	str := strings.Join(data, "&")
-	strMd5 := utils.GetHexMd5(str)
-	sign = utils.GetHexMd5(strMd5 + appSecret)
+	strMd5 := goutils.GetHexMd5(str)
+	sign = goutils.GetHexMd5(strMd5 + appSecret)
 	return
 }
 

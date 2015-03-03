@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"net/url"
 	"strconv"
 	"strings"
@@ -48,7 +48,7 @@ func DoAnzhiAuth(appKey, appSecret string, token string, now time.Time) (status 
 
 // 安智平台
 func getANZHILoginResponse(v url.Values, now time.Time) (json []byte, err error) {
-	return utils.PostFormHttpResponse("http://user.anzhi.com/web/api/sdk/third/1/queryislogin", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostFormHttpResponse("http://user.anzhi.com/web/api/sdk/third/1/queryislogin", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 func timeFormat() string {

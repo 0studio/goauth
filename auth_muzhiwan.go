@@ -4,7 +4,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -52,7 +52,7 @@ func DomuzhiwanAuth(appKey string, authorizationCode string, AccountId string, A
 }
 
 func getmuzhiwanAccessTokenRecord(appKey string, authorizationCode string, now time.Time) (accessTokenRec AccessTokenRecmuzhiwan) {
-	jsonBytes, err := utils.GetHttpResponseAsJson(getmuzhiwanAccessToken(appKey, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	jsonBytes, err := goutils.GetHttpResponseAsJson(getmuzhiwanAccessToken(appKey, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	accessTokenRec = AccessTokenRecmuzhiwan{}
 	if err != nil {
 		log.Error("auth_muzhiwan_error", err)
@@ -65,7 +65,7 @@ func getmuzhiwanAccessTokenRecord(appKey string, authorizationCode string, now t
 	if accessTokenRec.Code != MUZHIWAN_CODE_SUCC {
 		accessErrorTokenRec := AccessTokenRecmuzhiwanErrorCode{}
 		json.Unmarshal(jsonBytes, &accessErrorTokenRec)
-		accessTokenRec.Code = utils.Int2Str(accessErrorTokenRec.Code)
+		accessTokenRec.Code = goutils.Int2Str(accessErrorTokenRec.Code)
 		accessTokenRec.Msg = accessErrorTokenRec.Msg
 	}
 

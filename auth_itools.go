@@ -4,7 +4,7 @@ package goauth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	log "github.com/cihub/seelog"
 	"net/url"
 	"time"
@@ -22,7 +22,7 @@ func DoIToolsAuth(appId, appKey string, sessionId string, now time.Time) int32 {
 	return PB_ERRNO_AUTH_ERROR
 }
 func getIToolsLoginResponse(appId, appKey string, token string, now time.Time) string {
-	contentByte, err := utils.GetHttpResponseAsJson(getIToolsLoginUrl(appId, appKey, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	contentByte, err := goutils.GetHttpResponseAsJson(getIToolsLoginUrl(appId, appKey, token), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		log.Error("auth_itools_error", err)
 		return "false"
@@ -33,7 +33,7 @@ func getIToolsLoginResponse(appId, appKey string, token string, now time.Time) s
 }
 func getIToolsLoginUrl(appId, appKey string, token string) string {
 	signStr := fmt.Sprintf("appid=%s&sessionid=%s", appId, token)
-	sign := utils.GetHexMd5(signStr)
+	sign := goutils.GetHexMd5(signStr)
 	urlStr := fmt.Sprintf("https://pay.itools.cn/?r=auth/verify&appid=%s&sessionid=%s&sign=%s", appId, url.QueryEscape(token), sign)
 	return urlStr
 }

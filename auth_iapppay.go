@@ -2,7 +2,7 @@ package goauth
 
 import (
 	"encoding/json"
-	"github.com/0studio/goauth/utils"
+	"github.com/0studio/goutils"
 	"net/url"
 	"time"
 )
@@ -29,7 +29,7 @@ func DoIAPPPAYAuth(appId string, sid string, now time.Time) (status int32) {
 }
 
 func getIAppLoginResponse(v url.Values, now time.Time) (json []byte, err error) {
-	return utils.PostFormHttpResponse("http://ipay.iapppay.com:8888/iapppay/tokencheck", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	return goutils.PostFormHttpResponse("http://ipay.iapppay.com:8888/iapppay/tokencheck", v, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
 
 type IAppLoginResp struct {
