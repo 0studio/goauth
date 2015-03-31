@@ -28,10 +28,7 @@ func NewWeiXinSDK(appId, appSecret, string, code string) (sdk WeiXinSDK) {
 // "city":"CITY",
 // "country":"COUNTRY",
 // "headimgurl": "http://wx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0",
-// "privilege":[
-// "PRIVILEGE1",
-// "PRIVILEGE2"
-// ],
+// "privilege":["PRIVILEGE1", "PRIVILEGE2"],
 // "unionid": " o6_bmasdasdsad6_2sgVt7hMZOPfL"
 // 	}
 
@@ -156,10 +153,11 @@ func (sdk *WeiXinSDK) GetUserInfo(now time.Time) bool {
 		return false
 	}
 
-	return sdk.getWeiXinUserInfoRecord(now)
+	return sdk.getUserInfoRecord(now)
 }
-func (sdk *WeiXinSDK) getWeiXinUserInfoRecord(now time.Time) bool {
-	jsonBytes, err := goutils.GetHttpResponseAsJson(getWeiXinUserInfoUrl(sdk.AccessToken, sdk.OpenId), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+func (sdk *WeiXinSDK) getUserInfoRecord(now time.Time) bool {
+	urlStr := fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s", url.QueryEscape(sdk.AccessToken), url.QueryEscape(sdk.OpenId))
+	jsonBytes, err := goutils.GetHttpResponseAsJson(urlStr, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
 		fmt.Println(err)
 		return false
@@ -170,27 +168,3 @@ func (sdk *WeiXinSDK) getWeiXinUserInfoRecord(now time.Time) bool {
 	}
 	return true
 }
-
-func getWeiXinUserInfoUrl(accessToken string, openId string) string {
-	// Sign := GetHexMd5(fmt.Sprintf("%s%s%s%s%s", CONST_WeiXin_APPKEY, CONST_WeiXin_LOGIN_ACT, AccountId, sessionID, CONST_WeiXin_APPKEY_SECRET))
-	urlStr := fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s",
-		url.QueryEscape(accessToken), url.QueryEscape(openId))
-	return urlStr
-}
-
-// func DoWeiXinAuth(appId, appKey, appSecret string, authorizationCode string, AccountId string, AccountName string, now time.Time) (succ int32, newAccountId string, newAccountName string, sdkRec interface{}) {
-// 	sdk, err := getWeiXinAccessTokenRecord(appId, appKey, appSecret, now, authorizationCode)
-// 	if err != nil {
-// 		succ = PB_ERRNO_AUTH_ERROR
-// 		return
-// 	}
-
-// 	if sdk.IsTokenAvailable() {
-// 		succ, sdk.UserInfo = GetUserInfo(sdk.AccessToken, sdk.OpenId, now)
-// 		// succ, newAccountId, newAccountName =
-// 		sdkRec = sdk
-// 		return
-// 	} else {
-// 		return PB_ERRNO_AUTH_ERROR, AccountId, AccountName, nil
-// 	}
-// }
