@@ -12,7 +12,7 @@ import (
 // http://wiki.mg.open.qq.com/index.php?title=Sig%E8%AE%A1%E7%AE%97%E4%BA%8B%E4%BE%8B
 // method:GET or POST
 // URI不含host，URI示例：/v3/user/get_info）
-func snsSigCheck(method, uri string, params map[string]string, appkey string) (sign string) {
+func snsSigCheck(method, uri, appkey string, params map[string]string) (sign string) {
 	encodedURI := dataurl.EscapeString(uri)
 	sortParams := sortParams(params)
 	unSignedStr := fmt.Sprintf("%s&%s&%s", method, encodedURI, dataurl.EscapeString(sortParams.JoinParam(false)))

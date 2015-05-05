@@ -19,7 +19,7 @@ func TestSnsSigCheck(t *testing.T) {
 	params["pf"] = "qzone"
 	params["format"] = "json"
 	params["userip"] = "112.90.139.30"
-	sign := snsSigCheck(method, "/v3/user/get_info", params, "228bf094169a40a3bd188ba37ebe8723")
+	sign := snsSigCheck(method, "/v3/user/get_info", "228bf094169a40a3bd188ba37ebe8723", params)
 	fmt.Println("sign", sign)
 	assert.Equal(t, "FdJkiDYwMj5Aj1UG2RUPc83iokk=", sign)
 
