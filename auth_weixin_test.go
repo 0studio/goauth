@@ -51,7 +51,7 @@ func TestPrePaySign(t *testing.T) {
 }
 
 func TestGetPrePay(t *testing.T) {
-	partnerKey := "8934e7d15453e97507ef794cf7b0519d"
+	// partnerKey := "8934e7d15453e97507ef794cf7b0519d"
 	prePayData := prePayPostData{
 
 		AppId:     "wxd930ea5d5a258f4f",
