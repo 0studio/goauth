@@ -1,6 +1,7 @@
 package goauth
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/0studio/goutils"
 	"net/http"
@@ -104,34 +105,16 @@ func (sdk *TencentMSDK) getBalanceMCookie() (cookies []*http.Cookie) {
 
 }
 
-// openid 	《Android SDK 公共参数解释说明》
-// openkey 	《Android SDK 公共参数解释说明》
-// pay_token 	《Android SDK 公共参数解释说明》
-// appid 	《Android SDK 公共参数解释说明》
-// ts 	《Android SDK 公共参数解释说明》
-// sig 	《Android SDK 公共参数解释说明》
-// pf 	《Android SDK 公共参数解释说明》
-// pfkey 	《Android SDK 公共参数解释说明》
-// zoneid 	《Android SDK 公共参数解释说明》
-// format 	《Android SDK 公共参数解释说明》
+type GetBalanceMResult struct {
+	Status     int32   `json:"ret,omitempty"`         //
+	Msg        string  `json:"msg,omitempty"`         //
+	Balance    float64 `json:"balance,omitempty"`     //余额 	游戏币个数（包含了赠送游戏币）
+	GenBalance float64 `json:"gen_balance,omitempty"` //赠送游戏币个数
+	FirstSave  int32   `json:"first_save,omitempty"`  //是否满足首次充值，1：满足，0：不满足
+	SaveAmt    float64 `json:"save_amt ,omitempty"`   //累计充值金额(单位：游戏币)
+}
 
-// type GetBalanceM struct {
-// 	OpenId    string `json:"openid,omitempty"`    //
-// 	OpenKey   string `json:"openkey,omitempty"`   //
-// 	PayToken  string `json:"pay_token,omitempty"` //
-// 	AppId     string `json:"appid,omitempty"`     //
-// 	Timestamp int32  `json:"ts,omitempty"`        //时间戳,为自 1970 年 1 月 1 日 00:00(时区:东八区)至当前时间的秒数
-// 	Sig       string `json:"sig,omitempty"`       //
-// 	Pf        string `json:"pf,omitempty"`        //
-// 	PfKey     string `json:"pfkey,omitempty"`     //
-// 	ServerId  string `json:"zoneid,omitempty"`    //
-// 	Format    string `json:"format,omitempty"`    //
-// }
-
-// func (m GetBalanceM) getSign(method string, appKey string, now time.Time) string {
-// }
-
-func (sdk *TencentMSDK) GetBalanceM(now time.Time, extString string) (value float64) {
+func (sdk *TencentMSDK) GetBalanceM(now time.Time, extString string) (balance float64, totalBalance float64, ok bool) {
 	// 查询余额接口,获取用户游戏币余额
 	urlStr := sdk.getBalanceMUrl(now, extString)
 	cookies := sdk.getBalanceMCookie()
@@ -149,6 +132,18 @@ func (sdk *TencentMSDK) GetBalanceM(now time.Time, extString string) (value floa
 	params["format"] = "json"
 	params["sig"] = snsSigCheck("GET", uri, sdk.appKey, params)
 
-	goutils.GetHttpResponseWithCookie(urlStr, cookies, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	resultData, err := goutils.GetHttpResponseWithCookie(urlStr, cookies, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	if err != nil {
+		return
+	}
+	var result GetBalanceMResult
+	json.Unmarshal(resultData, &result)
+	if result.Status == 0 { // succ
+		balance = result.Balance
+		totalBalance = result.SaveAmt
+		ok = true
+		return
+	}
+
 	return
 }
