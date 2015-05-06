@@ -58,13 +58,14 @@ func (sdk *TencentMSDK) QQVerifyLogin(now time.Time, ip string) (succ bool) { //
 	data, _ := json.Marshal(&req)
 	resultData, err := goutils.PostHttpResponse(urlStr, data, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 	if err != nil {
-		fmt.Println("qqverifylogin", err)
+		fmt.Println("qqverifylogin_fail", sdk.accessToken, err)
 		return
 	}
 	var result QQVerifyLoginResult
-	json.Unmarshal(resultData, &result)
-	if result.Status == 0 {
+	err = json.Unmarshal(resultData, &result)
+	if result.Status == 0 && err == nil {
 		return true
 	}
+	fmt.Println("qqverifylogin_fail", sdk.openId, sdk.accessToken, result, err)
 	return false
 }

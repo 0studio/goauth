@@ -1,6 +1,8 @@
 package goauth
 
-import ()
+import (
+	"time"
+)
 
 const (
 	TENCENT_PLATFORM_QQ     = "qq"
@@ -8,16 +10,18 @@ const (
 )
 
 type TencentMSDK struct {
-	mode        string // dev or pro ,means develop or product
-	openId      string
-	platform    string // "qq" "weixin"
-	pf          string // sdk pf 平台来源，平台-注册渠道-系统运行平台-安装渠道-业务自定义。 从MSDK的getpf接口获取例如： qq_m_qq-2001-android-2011-xxxx
-	pfKey       string
-	appId       string
-	appKey      string
-	accessToken string // openkey,从手Q登录态或者微信登录态中获取的access_token 的值
-	payToken    string // Q登录时从手Q登录态中获取的pay_token的值,使用MSDK登录后获取到的eToken_QQ_Pay返回内容就是pay_token； 微信登录时特别注意该参数传空。
-	serverId    uint64 // zoneid 	账户分区ID。应用如果没有分区：传zoneid=1
+	mode         string // dev or pro ,means develop or product
+	openId       string
+	platform     string // "qq" "weixin"
+	pf           string // sdk pf 平台来源，平台-注册渠道-系统运行平台-安装渠道-业务自定义。 从MSDK的getpf接口获取例如： qq_m_qq-2001-android-2011-xxxx
+	pfKey        string
+	appId        string
+	appKey       string
+	accessToken  string // openkey,从手Q登录态或者微信登录态中获取的access_token 的值
+	payToken     string // Q登录时从手Q登录态中获取的pay_token的值,使用MSDK登录后获取到的eToken_QQ_Pay返回内容就是pay_token； 微信登录时特别注意该参数传空。
+	serverId     uint64 // zoneid 	账户分区ID。应用如果没有分区：传zoneid=1
+	expireTime   time.Time
+	refreshToken string
 }
 
 func NewTencentMSDK(mode, tencentPlatform, appId, appKey, accessToken, payToken, pf, pfKey, openId string, serverId uint64) (sdk TencentMSDK) {
