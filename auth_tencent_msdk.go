@@ -20,7 +20,7 @@ type TencentMSDK struct {
 	serverId    uint64 // zoneid 	账户分区ID。应用如果没有分区：传zoneid=1
 }
 
-func NewTencentMSDK(mode string, tencentPlatform, appId, appKey, accessToken, payToken string, pf, pfKey string, serverId uint64, openId string) (sdk TencentMSDK) {
+func NewTencentMSDK(mode, tencentPlatform, appId, appKey, accessToken, payToken, pf, pfKey, openId string, serverId uint64) (sdk TencentMSDK) {
 	sdk = TencentMSDK{
 		mode:        mode,
 		platform:    tencentPlatform,
