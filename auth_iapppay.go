@@ -43,6 +43,7 @@ type IAppLoginResp struct {
 // http://ipay.iapppay.com:9999/payapi/queryresult
 var ERROR_SIGNVARIFY_FAIL error = errors.New("sign_verify_fail")
 
+// IPayQueryResult这个接口已经验证可用了
 func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now time.Time) (ret IPayQueryResultResponse, err error) {
 
 	reqJsonStruct := iPayQueryResultRequest{
