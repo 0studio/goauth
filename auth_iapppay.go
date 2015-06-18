@@ -2,6 +2,7 @@ package goauth
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/0studio/goutils"
 	"net/url"
@@ -40,7 +41,7 @@ type IAppLoginResp struct {
 
 // 2.4	支付结果查询
 // http://ipay.iapppay.com:9999/payapi/queryresult
-func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now time.Time) (ret IPayQueryResultResponse) {
+func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now time.Time) (ret IPayQueryResultResponse, err error) {
 
 	reqJsonStruct := iPayQueryResultRequest{
 		AppId:     appid,
@@ -70,7 +71,7 @@ func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now t
 		return
 	}
 	if !goutils.VerifyRSASignWithMD5(rsaPublicKey, data, signRet) {
-		return IPayQueryResultResponse{}
+		return IPayQueryResultResponse{}, errors.New("sign_verify_fail")
 	}
 	return
 }
