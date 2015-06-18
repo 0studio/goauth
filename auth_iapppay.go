@@ -41,6 +41,8 @@ type IAppLoginResp struct {
 
 // 2.4	支付结果查询
 // http://ipay.iapppay.com:9999/payapi/queryresult
+var ERROR_SIGNVARIFY_FAIL error = errors.New("sign_verify_fail")
+
 func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now time.Time) (ret IPayQueryResultResponse, err error) {
 
 	reqJsonStruct := iPayQueryResultRequest{
@@ -71,8 +73,11 @@ func IPayQueryResult(appid, cporderid, rsaPrivateKey, rsaPublicKey string, now t
 		return
 	}
 	if !goutils.VerifyRSASignWithMD5(rsaPublicKey, data, signRet) {
-		return IPayQueryResultResponse{}, errors.New("sign_verify_fail")
+		return IPayQueryResultResponse{}, ERROR_SIGNVARIFY_FAIL
 	}
+	// {"appid":"3001853586","appuserid":"C751046C5339768AFAF6C071D7E91D49","cporderid":"e4a8eead-c99e-403e-b019-f104f158352c",
+	// "cpprivate":"","currency":"RMB","feetype":2,"money":0.10,"paytype":401,"
+	// result":0,"transid":"32031506181711435611","transtime":"2015-06-18 17:11:55","waresid":10}
 	return
 }
 
