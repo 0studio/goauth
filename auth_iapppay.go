@@ -81,13 +81,13 @@ type iPayQueryResultRequest struct {
 	CPorderid string `json:"cporderid"`
 }
 type IPayQueryResultResponse struct {
-	Code      string `json:"code,omitempty"`
-	Result    int32  `json:"result,omitempty"`    // 0–交易成功； 2–待支付
-	CPorderid string `json:"cporderid,omitempty"` // 商户订单号
-	TransId   string `json:"transid,omitempty"`   // 计费支付平台的交易流水号
-	Appuserid string `json:"appuserid,omitempty"` // 用户在商户应用的唯一标识
-	Waresid   string `json:"waresid,omitempty"`   // 平台为应用内需计费商品分配的编码
-	Money     string `json:"money,omitempty"`     // 本次交易的金额
+	Code      string  `json:"code,omitempty"`
+	Result    int32   `json:"result,omitempty"`    // 0–交易成功； 2–待支付
+	CPorderid string  `json:"cporderid,omitempty"` // 商户订单号
+	TransId   string  `json:"transid,omitempty"`   // 计费支付平台的交易流水号
+	Appuserid string  `json:"appuserid,omitempty"` // 用户在商户应用的唯一标识
+	Waresid   string  `json:"waresid,omitempty"`   // 平台为应用内需计费商品分配的编码
+	Money     float64 `json:"money,omitempty"`     // 本次交易的金额
 }
 
 func (res IPayQueryResultResponse) IsOk() bool {
