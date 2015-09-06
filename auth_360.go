@@ -27,45 +27,35 @@ const (
 // https://openapi.360.cn/oauth2/access_token?grant_type=authorization_code&
 // code=120653f48687763d6ddc486fdce6b51c383c7ee544e6e5eab&client_id=0fb2676d5007f123756d1c1b4b5968bc&
 // client_secret=1234567890ab18384f562d7d3f.....&redirect_uri=oob
-func Do360Auth(appId, appKey, appSecret string, authorizationCode string, AccountId string, AccountName string, now time.Time) (succ int32, newAccountId string, newAccountName string, sdkRec interface{}) {
-	accessTokenRec, err := get360AccessTokenRecord(appId, appKey, appSecret, now, authorizationCode)
-	if err != nil {
-		succ = PB_ERRNO_AUTH_ERROR
-		return
-	}
+func Do360Auth(appId, appKey, appSecret string, accessToken string, AccountId string, AccountName string, now time.Time) (succ int32, newAccountId string, newAccountName string, sdkRec interface{}) {
+	// accessTokenRec, err := get360AccessTokenRecord(appId, appKey, appSecret, now, authorizationCode)
+	// if err != nil {
+	// 	succ = PB_ERRNO_AUTH_ERROR
+	// 	return
+	// }
 
-	if accessTokenRec.IsTokenAvailable() {
-		succ, newAccountId, newAccountName = Get360UserInfo(accessTokenRec.Access_token, now)
-		sdkRec = accessTokenRec
-		return
-		// userInfo := get360UserInfoRecord(accessTokenRec.access_token)
-		// if userInfo.id != "" {
-		// 	return true, userInfo.id, userInfo.name
-		// }
-
-		// return true, accessTokenRec.access_token
-	} else {
-		return PB_ERRNO_AUTH_ERROR, AccountId, AccountName, nil
-	}
-}
-
-func get360AccessTokenRecord(appId, appKey, appSecret string, now time.Time, authorizationCode string) (accessTokenRec AccessTokenRec360, err error) {
-	jsonBytes, err := goutils.GetHttpResponseAsJson(get360AccessToken(appId, appKey, appSecret, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
-	if err != nil {
-		log.Error(err)
-		fmt.Println(err)
-		return
-	}
-
-	accessTokenRec = AccessTokenRec360{}
-	json.Unmarshal(jsonBytes, &accessTokenRec)
-
-	if accessTokenRec.IsTokenAvailable() {
-		accessTokenRec.ExpireTime = now.Add(time.Second * time.Duration(goutils.Str2Int(accessTokenRec.ExpiresIn, 0)))
-	}
-
+	succ, newAccountId, newAccountName = Get360UserInfo(accessToken, now)
+	sdkRec = accessToken
 	return
 }
+
+// func get360AccessTokenRecord(appId, appKey, appSecret string, now time.Time, authorizationCode string) (accessTokenRec AccessTokenRec360, err error) {
+// 	jsonBytes, err := goutils.GetHttpResponseAsJson(get360AccessToken(appId, appKey, appSecret, authorizationCode), now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+// 	if err != nil {
+// 		log.Error(err)
+// 		fmt.Println(err)
+// 		return
+// 	}
+
+// 	accessTokenRec = AccessTokenRec360{}
+// 	json.Unmarshal(jsonBytes, &accessTokenRec)
+
+// 	if accessTokenRec.IsTokenAvailable() {
+// 		accessTokenRec.ExpireTime = now.Add(time.Second * time.Duration(goutils.Str2Int(accessTokenRec.ExpiresIn, 0)))
+// 	}
+
+// 	return
+// }
 func (rec *AccessTokenRec360) Refresh360Token(appId, appKey, appSecret string, now time.Time) bool {
 	// Sign := GetHexMd5(fmt.Sprintf("%s%s%s%s%s", CONST_360_APPKEY, CONST_360_LOGIN_ACT, AccountId, sessionID, CONST_360_APPKEY_SECRET))
 	queryStr := fmt.Sprintf("grant_type=%s&refresh_token=%s&client_id=%s&clent_secret=%s&scope=basic",
@@ -93,18 +83,18 @@ func (rec *AccessTokenRec360) Refresh360Token(appId, appKey, appSecret string, n
 	return false
 }
 
-// authorizationCode 换access token
-func get360AccessToken(appId, appKey, appSecret string, authorizationCode string) string {
-	// Sign := GetHexMd5(fmt.Sprintf("%s%s%s%s%s", CONST_360_APPKEY, CONST_360_LOGIN_ACT, AccountId, sessionID, CONST_360_APPKEY_SECRET))
-	queryStr := fmt.Sprintf("grant_type=%s&code=%s&client_id=%s&clent_secret=%s&redirect_uri=%s",
-		CONST_360_GRANT_TYPE_AUTHORIZATION_CODE,
-		url.QueryEscape(authorizationCode),
-		url.QueryEscape(appKey),
-		url.QueryEscape(appSecret),
-		url.QueryEscape(CONST_360_REDIRECT_URI))
-	urlStr := fmt.Sprintf("https://openapi.360.cn/oauth2/access_token?%s", queryStr)
-	return urlStr
-}
+// // authorizationCode 换access token
+// func get360AccessToken(appId, appKey, appSecret string, authorizationCode string) string {
+// 	// Sign := GetHexMd5(fmt.Sprintf("%s%s%s%s%s", CONST_360_APPKEY, CONST_360_LOGIN_ACT, AccountId, sessionID, CONST_360_APPKEY_SECRET))
+// 	queryStr := fmt.Sprintf("grant_type=%s&code=%s&client_id=%s&clent_secret=%s&redirect_uri=%s",
+// 		CONST_360_GRANT_TYPE_AUTHORIZATION_CODE,
+// 		url.QueryEscape(authorizationCode),
+// 		url.QueryEscape(appKey),
+// 		url.QueryEscape(appSecret),
+// 		url.QueryEscape(CONST_360_REDIRECT_URI))
+// 	urlStr := fmt.Sprintf("https://openapi.360.cn/oauth2/access_token?%s", queryStr)
+// 	return urlStr
+// }
 
 // // {"error_code":"4000203","error":"client_id、client_secret不可用（OAuth2）"}
 // {
