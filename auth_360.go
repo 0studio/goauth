@@ -34,8 +34,9 @@ func Do360Auth(appId, appKey, appSecret string, accessToken string, AccountId st
 	// 	return
 	// }
 
-	succ, newAccountId, newAccountName = Get360UserInfo(accessToken, now)
-	sdkRec = accessToken
+	var originJson string
+	succ, newAccountId, newAccountName, originJson = Get360UserInfo(accessToken, now)
+	sdkRec = originJson
 	return
 }
 
@@ -140,15 +141,16 @@ func (token *AccessTokenRec360) IsTokenAvailable() bool {
 // 用户昵称,无值时候返回空
 
 type UserInfo360 struct {
-	Id     string
-	Name   string
-	Avatar string
-	Sex    string
-	Nick   string
-	Area   string
+	Id         string
+	Name       string
+	Avatar     string
+	Sex        string
+	Nick       string
+	Area       string
+	OriginJson string
 }
 
-func Get360UserInfo(accessToken string, now time.Time) (status int32, accountid string, name string) {
+func Get360UserInfo(accessToken string, now time.Time) (status int32, accountid string, name string, originJson string) {
 	userInfo, err := get360UserInfoRecord(accessToken, now)
 	if err != nil {
 		log.Error("360auth", err)
@@ -157,9 +159,9 @@ func Get360UserInfo(accessToken string, now time.Time) (status int32, accountid 
 	}
 
 	if userInfo.Id != "" {
-		return PB_STATUS_SUCC, userInfo.Id, userInfo.Name
+		return PB_STATUS_SUCC, userInfo.Id, userInfo.Name, userInfo.OriginJson
 	}
-	return PB_ERRNO_AUTH_ERROR, "", ""
+	return PB_ERRNO_AUTH_ERROR, "", "", ""
 
 }
 func get360UserInfoRecord(accessToken string, now time.Time) (userInfo UserInfo360, err error) {
@@ -169,13 +171,14 @@ func get360UserInfoRecord(accessToken string, now time.Time) (userInfo UserInfo3
 	}
 	userInfo = UserInfo360{}
 	json.Unmarshal(jsonBytes, &userInfo)
+	userInfo.OriginJson = string(jsonBytes)
 	return
 }
 
 func get360UserInfoUrl(accessToken string) string {
 	// Sign := GetHexMd5(fmt.Sprintf("%s%s%s%s%s", CONST_360_APPKEY, CONST_360_LOGIN_ACT, AccountId, sessionID, CONST_360_APPKEY_SECRET))
 
-	urlStr := fmt.Sprintf("https://openapi.360.cn/user/me.json?access_token=%s&fields=id,name", url.QueryEscape(accessToken))
+	urlStr := fmt.Sprintf("https://openapi.360.cn/user/me.json?access_token=%s&fields=id,name,avatar,sex,area", url.QueryEscape(accessToken))
 	return urlStr
 }
 
