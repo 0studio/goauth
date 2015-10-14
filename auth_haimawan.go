@@ -9,6 +9,8 @@ import (
 
 //海马移动支付
 // sdk 有ip 白名单机制 ，需要将你的ip 配置到白名单中， 才能登录成功 ,多个ip 用|分隔
+// pay.haima.me
+
 func DoHaimaWanAuth(appId string, token string, now time.Time) bool {
 	value := url.Values{}
 	value.Set("appid", appId)
@@ -21,7 +23,7 @@ func DoHaimaWanAuth(appId string, token string, now time.Time) bool {
 	if resp == "success" {
 		return true
 	}
-	fmt.Println("haima auth error:" + resp)
+	fmt.Println("haima auth error:"+appId, token, resp)
 
 	return false
 }
