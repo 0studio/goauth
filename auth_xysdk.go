@@ -18,9 +18,9 @@ uid:
 // 	XYAppId = "100009"
 // )
 
-func DoXYAuth(appId, uid string, sid string, accountId string, now time.Time) (status int32) {
+func DoXYAuth(appId, uid string, sid string, now time.Time) (status int32) {
 	value := url.Values{}
-	value.Set("uid", accountId)
+	value.Set("uid", uid)
 	value.Set("appid", appId)
 	value.Set("token", sid)
 	jsonBytes, err := getXYLoginResponse(value, now)
