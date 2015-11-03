@@ -7,32 +7,22 @@ import (
 	"time"
 )
 
-// CONST_UC_APPKEY    = ""
-// CONST_UC_APPSECRET = ""
-// const_UC_CPID      = 20087
-// const_UC_GAMEID    = 119474
-// const_UC_SERVERID  = 1333
-
 type UCData struct {
 	Sid string `json:"sid"`
 }
 type UCGame struct {
-	CpId      int    `json:"cpId"`
-	GameId    int    `json:"gameId"`
-	ChannelId string `json:"channelId"`
-	ServerId  int    `json:"serverId"`
+	GameId int `json:"gameId"`
 }
 
 type UCSend struct {
-	Id      int    `json:"id"`
-	Service string `json:"service"`
-	Data    UCData `json:"data"`
-	Game    UCGame `json:"game"`
-	Sign    string `json:"sign"`
+	Id   int64  `json:"id"`
+	Data UCData `json:"data"`
+	Game UCGame `json:"game"`
+	Sign string `json:"sign"`
 }
 
 type UCRecv struct {
-	Id    int        `json:"id"`
+	Id    int64      `json:"id"`
 	State UCState    `json:"state"`
 	Data  UCDataRecv `json:"data"`
 }
@@ -42,35 +32,45 @@ type UCState struct {
 	Msg  string `json:"msg"`
 }
 
-type UCDataRecv struct {
-	UCid     int    `json:"ucid"`
-	NickName string `json:"nickname"`
+func (s UCState) IsSucc() bool {
+	// 1 succ,10 参数错，11 未登录，99 sdk server error
+	return s.Code == 1
 }
 
-func DoUCAuth(appKey, appSecret string, cpId, gameid, serverid int, sid string, now time.Time) (status int32) {
-	id := int(now.Unix())
-	service := "ucid.user.sidInfo"
+type UCDataRecv struct {
+	AccountId string `json:"accountId"`
+	Creator   string `json:"creator"` // JY:九游，PP
+	NickName  string `json:"nickname"`
+}
+
+func DoUCAuth(isSandbox bool, gameid int, appKey, sid string, now time.Time) (ucRecv UCRecv) {
+	id := now.Unix()
+	// service := "ucid.user.sidInfo"
 	ucData := UCData{sid}
-	ucGame := UCGame{cpId, gameid, "2", serverid}
+	ucGame := UCGame{gameid}
 
-	sign := goutils.GetHexMd5(fmt.Sprintf("%s%s=%s%s", cpId, "sid", sid, appKey))
+	sign := goutils.GetHexMd5(fmt.Sprintf("sid=%s%s", sid, appKey))
 
-	ucSend := UCSend{id, service, ucData, ucGame, sign}
+	ucSend := UCSend{id, ucData, ucGame, sign}
 	content, _ := json.Marshal(ucSend)
-	jsonBytes, err := getUCLoginResponse(content, now)
+	jsonBytes, err := getUCLoginResponse(isSandbox, content, now)
 	if err != nil {
-		return PB_ERRNO_AUTH_ERROR
+		return
 	}
 	loginInfo := UCRecv{}
 	json.Unmarshal(jsonBytes, &loginInfo)
-	if loginInfo.State.Code == 1 {
-		status = PB_STATUS_SUCC
-		return
-	}
-	return PB_ERRNO_AUTH_ERROR
+	return
 }
 
+const (
+	UC_USER_VERIFY_URL         = "http://sdk.g.uc.cn/cp/account.verifySession"
+	UC_USER_VERIFY_URL_SANDBOX = "http://sdk.test4.g.uc.cn/cp/account.verifySession"
+)
+
 // UC平台
-func getUCLoginResponse(content []byte, now time.Time) (json []byte, err error) {
-	return goutils.PostHttpResponse("http://sdk.g.uc.cn/ss/", content, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+func getUCLoginResponse(isSandbox bool, content []byte, now time.Time) (json []byte, err error) {
+	if isSandbox {
+		return goutils.PostHttpResponse(UC_USER_VERIFY_URL_SANDBOX, content, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
+	}
+	return goutils.PostHttpResponse(UC_USER_VERIFY_URL, content, now, DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT)
 }
