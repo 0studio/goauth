@@ -2,7 +2,6 @@ package goauth
 
 const (
 	DEFAULT_AUTH_HTTP_REQUEST_TIMEOUT = 30 * 1000 // 10s
-	PAY_APP_STORE_TIMEOUT             = 30 * 1000 // 10s
 )
 
 // const (
