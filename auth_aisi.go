@@ -2,9 +2,12 @@ package goauth
 
 import (
 	"encoding/json"
-	"github.com/0studio/goutils"
 	"net/url"
 	"time"
+
+	"strconv"
+
+	"github.com/0studio/goutils"
 )
 
 /*
@@ -35,4 +38,23 @@ type AiSiLoginResp struct {
 	Status   int32  `json:"status"`
 	UserName string `json:"username"`
 	UserId   int32  `json:"userid"`
+}
+
+func (res AiSiLoginResp) GetUserIdAsString() string {
+	return strconv.Itoa(int(res.UserId))
+}
+func (res AiSiLoginResp) IsSucc() bool {
+	return res.Status == 0 && res.UserId != 0
+}
+
+func DoAiSiAuth2(token string, now time.Time) (loginInfo AiSiLoginResp) {
+	value := url.Values{}
+	value.Set("token", token)
+	jsonBytes, err := getLoginAiSiResponse(value, now)
+	if err != nil {
+		return
+	}
+	loginInfo = AiSiLoginResp{}
+	json.Unmarshal(jsonBytes, &loginInfo)
+	return
 }
